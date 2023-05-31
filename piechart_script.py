@@ -1,19 +1,26 @@
-# Importamos las librerías y dependencias
+# Importamos las bibliotecas y dependencias
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Importamos el archivo CSV
-df = pd.read_csv('encuesta2019.csv', delimiter=';')
+def plot():
+    # Importamos el archivo CSV
+    df = pd.read_csv('encuesta2019.csv', delimiter=';')
 
-# Convertimos el ponderador a números decimales
-df['Ponderador'] = df['Ponderador'].str.replace(',', '.').astype(float)
+    # Convertimos el ponderador a números decimales
+    df['Ponderador'] = df['Ponderador'].str.replace(',', '.').astype(float)
 
-# Agrupamos los datos por la columna "Radio" y sumamos ponderador
-grouped = df.groupby('Radio')['Ponderador'].sum()
+    # Agrupamos por "IdentificaciónIdeológica" y sumamos los ponderadores
+    grouped = df.groupby('IdentificaciónIdeológica')['Ponderador'].sum()
 
-# Especificamos los colores
-colors = ['skyblue', 'yellowgreen', 'coral', 'gold', 'purple', 'pink', 'orange', 'blue', 'red', 'green']
+    # Calculamos los porcentajes
+    percentages = grouped / grouped.sum() * 100
 
-# Generamos la gráfica de tipo "proyección solar"
-fig, ax = plt.subplots()
-ax.pie(grouped, labels = grouped.index, autopct='%1.1f%%', startangle=90, pctdistance=0.85, colors=colors, wedgeprops=dict(width=0.3))
+    # Especificamos los colores
+    colors = ['skyblue', 'yellowgreen', 'coral', 'gold', 'purple', 'pink', 'orange', 'blue', 'red', 'green']
+
+    # Generamos la gráfica de pastel
+    fig, ax = plt.subplots(figsize=(10, 12.4))
+    ax.pie(percentages, labels=percentages.index, colors=colors, autopct='%1.1f%%')
+    ax.axis('equal')  # Para que la gráfica sea circular
+
+    return fig
